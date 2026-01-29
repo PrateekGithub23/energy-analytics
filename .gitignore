@@ -1,0 +1,10 @@
+# Python
+venv/
+__pycache__/
+*.pyc
+
+# Data
+data-lake/raw/
+
+# OS
+.DS_Store
