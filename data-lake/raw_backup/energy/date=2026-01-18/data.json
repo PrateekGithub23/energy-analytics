@@ -1,0 +1,4 @@
+{"sensor_id": "SENSOR_001", "timestamp": "2026-01-18T21:33:58", "energy_kwh": 0.86, "voltage": 215, "room_temp": 29.7}
+{"sensor_id": "SENSOR_001", "timestamp": "2026-01-18T21:33:59", "energy_kwh": 0.35, "voltage": 236, "room_temp": 23.2}
+{"sensor_id": "SENSOR_002", "timestamp": "2026-01-18T21:33:59", "energy_kwh": 0.29, "voltage": 235, "room_temp": 18.5}
+{"sensor_id": "SENSOR_002", "timestamp": "2026-01-18T21:33:59", "energy_kwh": 2.27, "voltage": 226, "room_temp": 24.5}
