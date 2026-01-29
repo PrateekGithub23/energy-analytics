@@ -42,11 +42,22 @@ def load_data():
 
 daily_df, hourly_df, raw_df = load_data()
 
+# check for empty dataframes
+raw_available = (
+    raw_df is not None
+    and not raw_df.empty
+    and "sensor_id" in raw_df.columns
+)
+
 
 
 # sidebar
 st.sidebar.subheader("Sensor Filter")
-sensor_options = ["All Sensors"]+sorted(raw_df["sensor_id"].unique().tolist())
+if raw_available:
+    sensor_options = ["All Sensors"] + sorted(raw_df["sensor_id"].unique().tolist())
+else:
+    sensor_options = ["All Sensors"]
+
 selected_sensor = st.sidebar.selectbox(
     "Select Sensor",
     sensor_options
@@ -82,29 +93,42 @@ filtered_hourly = hourly_df[
 
 
 # Raw sensor data filtering based on selected sensor
-raw_df["timestamp"] = pd.to_datetime(raw_df["timestamp"])
+if raw_available:
+    # convert timestamp
+    raw_df["timestamp"] = pd.to_datetime(raw_df["timestamp"])
 
-raw_filtered = raw_df[
-    (raw_df["timestamp"] >= start_date) &
-    (raw_df["timestamp"] <= end_date)
-]
+    raw_filtered = raw_df[
+        (raw_df["timestamp"] >= start_date) &
+        (raw_df["timestamp"] <= end_date)
+    ]
 
-# check if a specific sensor is selected
-if selected_sensor != "All Sensors":
-    # return only data for that sensor
-    raw_filtered = raw_filtered[raw_filtered["sensor_id"] == selected_sensor]
+    if selected_sensor != "All Sensors":
+        raw_filtered = raw_filtered[raw_filtered["sensor_id"] == selected_sensor]
 
-# adds a new column event_data extracted from timestamp
-raw_filtered["event_data"] = raw_filtered["timestamp"].dt.date
+    raw_filtered["event_data"] = raw_filtered["timestamp"].dt.date
+    raw_filtered["event_hour"] = raw_filtered["timestamp"].dt.hour
 
-daily_sensor = (raw_filtered.groupby("event_data")["energy_kwh"].sum().reset_index().rename(columns={"energy_kwh": "total_energy_kwh"}))
+    daily_sensor = (
+        raw_filtered
+        .groupby("event_data")["energy_kwh"]
+        .sum()
+        .reset_index()
+        .rename(columns={"energy_kwh": "total_energy_kwh"})
+    )
 
-# adds a new column event_hour extracted from timestamp
-raw_filtered["event_hour"] = raw_filtered["timestamp"].dt.hour
+    hourly_sensor = (
+        raw_filtered
+        .groupby(["event_data", "event_hour"])["energy_kwh"]
+        .sum()
+        .reset_index()
+        .rename(columns={"energy_kwh": "total_energy_kwh"})
+    )
 
+else:
+    st.info("Raw sensor-level data is not available in the deployed environment.")
+    daily_sensor = pd.DataFrame(columns=["event_data", "total_energy_kwh"])
+    hourly_sensor = pd.DataFrame(columns=["event_data", "event_hour", "total_energy_kwh"])
 
-# returns a dataframe where each row is a unique combination of event_data and event_hour with total_energy_kwh summed for that hour
-hourly_sensor = (raw_filtered.groupby(["event_data", "event_hour"])["energy_kwh"].sum().reset_index().rename(columns={"energy_kwh": "total_energy_kwh"}))
 
 
 # KPI Metrics
