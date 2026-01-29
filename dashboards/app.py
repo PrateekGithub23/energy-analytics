@@ -29,7 +29,10 @@ def load_data():
         df = pd.read_json(f, lines=True)
         dfs.append(df)
 
-    raw = pd.concat(dfs, ignore_index=True)
+    if dfs:
+        raw = pd.concat(dfs, ignore_index=True)
+    else:
+        raw = pd.DataFrame()
 
 
     daily["event_date"] = pd.to_datetime(daily["event_date"])
