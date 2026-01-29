@@ -92,6 +92,7 @@ filtered_hourly = hourly_df[
 ]
 
 
+
 # Raw sensor data filtering based on selected sensor
 if raw_available:
     # convert timestamp
@@ -129,6 +130,15 @@ else:
     daily_sensor = pd.DataFrame(columns=["event_data", "total_energy_kwh"])
     hourly_sensor = pd.DataFrame(columns=["event_data", "event_hour", "total_energy_kwh"])
 
+if raw_available:
+    # Use sensor-level aggregates (local/dev)
+    kpi_daily = daily_sensor
+    kpi_hourly = hourly_sensor
+else:
+    # Use processed Spark output (prod/deployed)
+    kpi_daily = filtered_daily.rename(columns={"event_date": "event_data"})
+    kpi_hourly = filtered_hourly.rename(columns={"event_date": "event_data"})
+
 
 
 # KPI Metrics
@@ -136,18 +146,20 @@ st.subheader("📊 Key Metrics")
 
 col1, col2, col3 = st.columns(3)
 
-total_energy = daily_sensor["total_energy_kwh"].sum()
-avg_daily = daily_sensor["total_energy_kwh"].mean() if not daily_sensor.empty else 0
+total_energy = kpi_daily["total_energy_kwh"].sum()
+avg_daily = kpi_daily["total_energy_kwh"].mean() if not kpi_daily.empty else 0
+
 
 
 # this calculates the peak usage hour, a single value representing the hour of the day (0-23) with highest average energy consumption across the selected date range
 peak_hour = (
-    hourly_sensor
+    kpi_hourly
     .groupby("event_hour")["total_energy_kwh"]
     .mean()
     .idxmax()
-    if not hourly_sensor.empty else 0
+    if not kpi_hourly.empty else 0
 )
+
 
 
 col1.metric("Total Energy (kWh)", f"{total_energy:.2f}")
@@ -160,10 +172,11 @@ st.subheader("📈 Daily Energy Consumption Trend")
 
 fig1, ax1 = plt.subplots(figsize=(10, 4))
 ax1.plot(
-    daily_sensor["event_data"],
-    daily_sensor["total_energy_kwh"],
+    kpi_daily["event_data"],
+    kpi_daily["total_energy_kwh"],
     marker="o"
 )
+
 ax1.set_xlabel("Date")
 ax1.set_ylabel("Energy (kWh)")
 ax1.set_title("Daily Energy Usage")
@@ -175,11 +188,12 @@ st.pyplot(fig1)
 st.subheader("📈 Average Hourly Energy Consumption Trend")
 
 hourly_avg = (
-    hourly_sensor
+    kpi_hourly
     .groupby("event_hour")["total_energy_kwh"]
     .mean()
     .reset_index()
 )
+
 
 fig2, ax2 = plt.subplots(figsize=(10, 4))
 sns.barplot(
