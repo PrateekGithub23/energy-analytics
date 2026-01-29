@@ -1,0 +1,10 @@
+{"sensor_id": "SENSOR_001", "timestamp": "2026-01-21T21:47:27", "energy_kwh": 2.46, "voltage": 205, "room_temp": 18.5}
+{"sensor_id": "SENSOR_001", "timestamp": "2026-01-21T21:47:27", "energy_kwh": 1.39, "voltage": 221, "room_temp": 27.8}
+{"sensor_id": "SENSOR_002", "timestamp": "2026-01-21T21:47:27", "energy_kwh": 2.42, "voltage": 215, "room_temp": 19.8}
+{"sensor_id": "SENSOR_002", "timestamp": "2026-01-21T21:47:27", "energy_kwh": 1.43, "voltage": 219, "room_temp": 22.6}
+{"sensor_id": "SENSOR_003", "timestamp": "2026-01-21T21:47:27", "energy_kwh": 1.94, "voltage": 210, "room_temp": 27.6}
+{"sensor_id": "SENSOR_003", "timestamp": "2026-01-21T21:47:27", "energy_kwh": 1.27, "voltage": 205, "room_temp": 18.5}
+{"sensor_id": "SENSOR_004", "timestamp": "2026-01-21T21:47:27", "energy_kwh": 1.46, "voltage": 240, "room_temp": 25.9}
+{"sensor_id": "SENSOR_004", "timestamp": "2026-01-21T21:47:27", "energy_kwh": 1.79, "voltage": 222, "room_temp": 22.2}
+{"sensor_id": "SENSOR_005", "timestamp": "2026-01-21T21:47:27", "energy_kwh": 1.61, "voltage": 213, "room_temp": 25.3}
+{"sensor_id": "SENSOR_005", "timestamp": "2026-01-21T21:47:27", "energy_kwh": 2.46, "voltage": 230, "room_temp": 18.7}
