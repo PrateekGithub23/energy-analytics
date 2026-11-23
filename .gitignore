@@ -8,3 +8,7 @@ data-lake/raw/
 
 # OS
 .DS_Store
+
+# Spark job markers and checksums
+*.crc
+_SUCCESS
